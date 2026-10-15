@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
       stock: Math.max(0, Number(body.stock) || 0),
       emoji: String(body.emoji || "🛍️").trim() || "🛍️",
       tone: String(body.tone || "#C4A484").trim() || "#C4A484",
+      image: body.image ? String(body.image).trim() || null : null,
     }
     if (!product.colors.length) product.colors = ["افتراضي"]
     if (!product.sizes.length) product.sizes = ["مقاس واحد"]
