@@ -74,7 +74,7 @@ export function getSessions() {
   return g.__zs_sessions!
 }
 
-export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "ZstoreAdmin2026!"
+export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "ziadziad7777777@@!"
 
 export function calcLineTotal(
   basePrice: number,
