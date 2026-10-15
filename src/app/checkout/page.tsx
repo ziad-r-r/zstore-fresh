@@ -215,4 +215,23 @@ export default function CheckoutPage() {
               </div>
               <div className="border-t border-border pt-3 flex justify-between text-lg font-bold">
                 <span>الإجمالي</span>
-                <span className="text-coffee">{formatPrice(totalPrice + 
+                <span className="text-coffee">{formatPrice(totalPrice + SHIPPING_FEE)}</span>
+              </div>
+              {error && (
+                <p className="mt-3 text-danger text-sm">{error}</p>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-4 w-full bg-coffee text-white py-3.5 rounded-full font-semibold disabled:opacity-60"
+              >
+                {loading ? "جاري الإرسال..." : "تأكيد الطلب"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </main>
+      <Footer />
+    </>
+  )
+}
