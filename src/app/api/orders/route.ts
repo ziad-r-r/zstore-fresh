@@ -5,6 +5,7 @@ import {
   getOrders,
   getSessions,
   calcLineTotal,
+  SHIPPING_FEE,
   type Order,
 } from "@/lib/store"
 
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
     const basePrice =
       Math.round(lines.reduce((s, l) => s + l.price * l.quantity, 0) * 100) /
       100
-    const shippingFee = 0
+    const shippingFee = SHIPPING_FEE
     const total = basePrice + shippingFee
 
     const order: Order = {
