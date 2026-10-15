@@ -52,10 +52,14 @@ export default function HomePage() {
                 </span>
               ) : null}
               <div
-                className="aspect-square grid place-items-center text-5xl"
+                className="aspect-square grid place-items-center text-5xl overflow-hidden"
                 style={{ background: p.tone }}
               >
-                {p.emoji}
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                ) : (
+                  p.emoji
+                )}
               </div>
               <div className="p-3">
                 <h3 className="font-semibold text-sm">{p.name}</h3>
