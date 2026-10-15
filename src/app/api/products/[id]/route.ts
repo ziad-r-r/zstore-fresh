@@ -86,6 +86,12 @@ export async function PUT(
           : cur.emoji,
       tone:
         body.tone != null ? String(body.tone).trim() || cur.tone : cur.tone,
+      image:
+        body.image !== undefined
+          ? body.image
+            ? String(body.image).trim() || null
+            : null
+          : cur.image,
     }
     if (!updated.colors.length) updated.colors = ["افتراضي"]
     if (!updated.sizes.length) updated.sizes = ["مقاس واحد"]
