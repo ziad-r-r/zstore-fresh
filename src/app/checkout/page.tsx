@@ -5,7 +5,7 @@ import Link from "next/link"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { useCart } from "@/components/CartProvider"
-import { formatPrice } from "@/lib/store"
+import { formatPrice, SHIPPING_FEE } from "@/lib/store"
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart()
@@ -205,26 +205,14 @@ export default function CheckoutPage() {
                   </li>
                 ))}
               </ul>
+              <div className="flex justify-between text-sm text-muted mb-1">
+                <span>المنتجات</span>
+                <span>{formatPrice(totalPrice)}</span>
+              </div>
+              <div className="flex justify-between text-sm text-muted mb-2">
+                <span>الشحن</span>
+                <span>{formatPrice(SHIPPING_FEE)}</span>
+              </div>
               <div className="border-t border-border pt-3 flex justify-between text-lg font-bold">
                 <span>الإجمالي</span>
-                <span className="text-coffee">{formatPrice(totalPrice)}</span>
-              </div>
-              <p className="text-xs text-muted mt-2">سعر المنتجات فقط</p>
-              {error && (
-                <p className="mt-3 text-danger text-sm">{error}</p>
-              )}
-              <button
-                type="submit"
-                disabled={loading}
-                className="mt-4 w-full bg-coffee text-white py-3.5 rounded-full font-semibold disabled:opacity-60"
-              >
-                {loading ? "جاري الإرسال..." : "تأكيد الطلب"}
-              </button>
-            </div>
-          </div>
-        </form>
-      </main>
-      <Footer />
-    </>
-  )
-}
+                <span className="text-coffee">{formatPrice(totalPrice + 
