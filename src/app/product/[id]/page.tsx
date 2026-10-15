@@ -151,3 +151,32 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+          <button
+            className={`mt-6 px-8 py-3 rounded-full text-white font-semibold ${
+              added ? "bg-success" : "bg-coffee hover:bg-coffee-dark"
+            }`}
+            onClick={() => {
+              addItem({
+                productId: product.id,
+                name: product.name,
+                price: product.basePrice,
+                offer2Price: product.offer2Price ?? null,
+                color,
+                size,
+                quantity: qty,
+                emoji: product.emoji,
+                tone: product.tone,
+                image: product.image,
+              })
+              setAdded(true)
+              setTimeout(() => setAdded(false), 1500)
+            }}
+          >
+            {added ? "تمت الإضافة ✓" : "أضف إلى السلة"}
+          </button>
+        </div>
+      </main>
+      <Footer />
+    </>
+  )
+}
