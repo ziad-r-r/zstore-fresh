@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { formatPrice, type Product } from "@/lib/store"
 
 const empty = {
@@ -26,6 +26,24 @@ function headers(): HeadersInit {
   }
 }
 
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("الملف يجب أن يكون صورة"))
+      return
+    }
+    // حد أقصى ~1.2 ميجا تقريباً بعد الضغط
+    if (file.size > 1.5 * 1024 * 1024) {
+      reject(new Error("حجم الصورة كبير — اختر صورة أصغر من 1.5 ميجا"))
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result || ""))
+    reader.onerror = () => reject(new Error("فشل قراءة الصورة"))
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -34,6 +52,8 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState(empty)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   const load = async () => {
     const res = await fetch("/api/products")
@@ -49,6 +69,21 @@ export default function AdminProductsPage() {
     }
     load()
   }, [])
+
+  const onPickImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setError("")
+    setUploading(true)
+    try {
+      const dataUrl = await fileToDataUrl(file)
+      setForm((f) => ({ ...f, image: dataUrl }))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "فشل رفع الصورة")
+    }
+    setUploading(false)
+    if (fileRef.current) fileRef.current.value = ""
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -160,16 +195,57 @@ export default function AdminProductsPage() {
           </div>
           <input placeholder="الألوان (مفصولة بفاصلة)" value={form.colors} onChange={(e) => setForm({ ...form, colors: e.target.value })} className="w-full border border-border rounded-xl px-3 py-2.5" />
           <input placeholder="المقاسات (مفصولة بفاصلة)" value={form.sizes} onChange={(e) => setForm({ ...form, sizes: e.target.value })} className="w-full border border-border rounded-xl px-3 py-2.5" />
-          <input
-            placeholder="رابط صورة المنتج (URL)"
-            value={form.image}
-            onChange={(e) => setForm({ ...form, image: e.target.value })}
-            className="w-full border border-border rounded-xl px-3 py-2.5"
-            dir="ltr"
-          />
+
+          <div className="space-y-2">
+            <label className="text-xs text-muted block">صورة المنتج</label>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                disabled={uploading}
+                onClick={() => fileRef.current?.click()}
+                className="bg-beige border border-border px-4 py-2.5 rounded-full text-sm font-medium disabled:opacity-60"
+              >
+                {uploading ? "جاري الرفع..." : "📷 اختر صورة من الجهاز"}
+              </button>
+              {form.image && (
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, image: "" })}
+                  className="text-danger text-sm"
+                >
+                  إزالة الصورة
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={onPickImage}
+            />
+            {form.image && (
+              <div className="mt-2">
+                <img
+                  src={form.image}
+                  alt="معاينة"
+                  className="w-28 h-28 object-cover rounded-xl border border-border"
+                />
+              </div>
+            )}
+            <input
+              placeholder="أو الصق رابط صورة (URL) — اختياري"
+              value={form.image.startsWith("data:") ? "" : form.image}
+              onChange={(e) => setForm({ ...form, image: e.target.value })}
+              className="w-full border border-border rounded-xl px-3 py-2.5"
+              dir="ltr"
+            />
+          </div>
+
           {error && <p className="text-danger text-sm">{error}</p>}
           <div className="flex gap-2">
-            <button type="submit" disabled={saving} className="bg-coffee text-white px-5 py-2.5 rounded-full font-semibold disabled:opacity-60">{saving ? "جاري الحفظ..." : "حفظ"}</button>
+            <button type="submit" disabled={saving || uploading} className="bg-coffee text-white px-5 py-2.5 rounded-full font-semibold disabled:opacity-60">{saving ? "جاري الحفظ..." : "حفظ"}</button>
             <button type="button" onClick={() => setShow(false)} className="border border-border px-5 py-2.5 rounded-full">إلغاء</button>
           </div>
         </form>
