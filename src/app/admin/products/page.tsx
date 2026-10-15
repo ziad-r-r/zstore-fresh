@@ -13,6 +13,7 @@ const empty = {
   stock: "",
   emoji: "🛍️",
   tone: "#C4A484",
+  image: "",
 }
 
 function headers(): HeadersInit {
@@ -63,6 +64,7 @@ export default function AdminProductsPage() {
       stock: Number(form.stock) || 0,
       emoji: form.emoji.trim() || "🛍️",
       tone: form.tone.trim() || "#C4A484",
+      image: form.image.trim() || null,
     }
     const url = editing ? `/api/products/${editing.id}` : "/api/products"
     const method = editing ? "PUT" : "POST"
@@ -110,6 +112,7 @@ export default function AdminProductsPage() {
       stock: String(p.stock ?? 0),
       emoji: p.emoji || "🛍️",
       tone: p.tone || "#C4A484",
+      image: p.image || "",
     })
     setError("")
     setShow(true)
@@ -152,47 +155,4 @@ export default function AdminProductsPage() {
           </div>
           <p className="text-xs text-muted">قطعة واحدة بالسعر العادي، وقطعتين بالعرض إن وُجد.</p>
           <div className="grid grid-cols-2 gap-3">
-            <input type="number" min={0} placeholder="المخزون" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="border border-border rounded-xl px-3 py-2.5" />
-            <input placeholder="إيموجي" value={form.emoji} onChange={(e) => setForm({ ...form, emoji: e.target.value })} className="border border-border rounded-xl px-3 py-2.5" />
-          </div>
-          <input placeholder="الألوان (مفصولة بفاصلة)" value={form.colors} onChange={(e) => setForm({ ...form, colors: e.target.value })} className="w-full border border-border rounded-xl px-3 py-2.5" />
-          <input placeholder="المقاسات (مفصولة بفاصلة)" value={form.sizes} onChange={(e) => setForm({ ...form, sizes: e.target.value })} className="w-full border border-border rounded-xl px-3 py-2.5" />
-          {error && <p className="text-danger text-sm">{error}</p>}
-          <div className="flex gap-2">
-            <button type="submit" disabled={saving} className="bg-coffee text-white px-5 py-2.5 rounded-full font-semibold disabled:opacity-60">{saving ? "جاري الحفظ..." : "حفظ"}</button>
-            <button type="button" onClick={() => setShow(false)} className="border border-border px-5 py-2.5 rounded-full">إلغاء</button>
-          </div>
-        </form>
-      )}
-
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-beige">
-            <tr>
-              <th className="text-right p-3">المنتج</th>
-              <th className="text-right p-3">السعر</th>
-              <th className="text-right p-3">عرض قطعتين</th>
-              <th className="text-right p-3">المخزون</th>
-              <th className="text-right p-3">إجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id} className="border-t border-border">
-                <td className="p-3"><span className="mr-1">{p.emoji}</span>{p.name}</td>
-                <td className="p-3 font-semibold text-coffee">{formatPrice(p.basePrice)}</td>
-                <td className="p-3">{p.offer2Price != null ? formatPrice(p.offer2Price) : "—"}</td>
-                <td className="p-3">{p.stock}</td>
-                <td className="p-3">
-                  <button type="button" onClick={() => startEdit(p)} className="text-coffee text-sm ml-2">تعديل</button>
-                  <button type="button" onClick={() => del(p.id)} className="text-danger text-sm">حذف</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {products.length === 0 && <p className="p-8 text-center text-muted">لا توجد منتجات</p>}
-      </div>
-    </div>
-  )
-}
+            <input type="number" min={0} placeholder="المخزون" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="border 
