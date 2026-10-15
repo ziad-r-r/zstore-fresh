@@ -19,6 +19,7 @@ export type CartItem = {
   quantity: number
   emoji?: string
   tone?: string
+  image?: string | null
 }
 
 type Ctx = {
@@ -73,6 +74,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           quantity: next[i].quantity + item.quantity,
           price: item.price,
           offer2Price: item.offer2Price ?? next[i].offer2Price,
+          image: item.image ?? next[i].image,
         }
         return next
       }
