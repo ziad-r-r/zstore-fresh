@@ -68,10 +68,14 @@ export default function ProductPage() {
       <Header />
       <main className="flex-1 max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
         <div
-          className="rounded-2xl border border-border aspect-square grid place-items-center text-8xl"
+          className="rounded-2xl border border-border aspect-square grid place-items-center text-8xl overflow-hidden"
           style={{ background: product.tone }}
         >
-          {product.emoji}
+          {product.image ? (
+            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          ) : (
+            product.emoji
+          )}
         </div>
         <div>
           <h1 className="text-2xl font-bold text-coffee-dark">{product.name}</h1>
@@ -147,31 +151,3 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
-          <button
-            className={`mt-6 px-8 py-3 rounded-full text-white font-semibold ${
-              added ? "bg-success" : "bg-coffee hover:bg-coffee-dark"
-            }`}
-            onClick={() => {
-              addItem({
-                productId: product.id,
-                name: product.name,
-                price: product.basePrice,
-                offer2Price: product.offer2Price ?? null,
-                color,
-                size,
-                quantity: qty,
-                emoji: product.emoji,
-                tone: product.tone,
-              })
-              setAdded(true)
-              setTimeout(() => setAdded(false), 1500)
-            }}
-          >
-            {added ? "تمت الإضافة ✓" : "أضف إلى السلة"}
-          </button>
-        </div>
-      </main>
-      <Footer />
-    </>
-  )
-}
